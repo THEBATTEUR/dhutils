@@ -288,16 +288,10 @@ public class ItemMessage {
 		}
 
 		private void sendItemSlotChange(Player player, int slot, ItemStack stack) {
-			PacketContainer setSlot = new PacketContainer(103);
 			// int field 0: window id (0 = player inventory)
 			// int field 1: slot number (36 - 44 for player hotbar)
-			setSlot.getIntegers().write(0, 0).write(1, slot + 36);
-			setSlot.getItemModifier().write(0, stack);
-			try {
-				ProtocolLibrary.getProtocolManager().sendServerPacket(player, setSlot);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(0, slot+36, CraftItemStack.asNMSCopy(stack));
+            		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 		}
 	}
 
